@@ -4161,14 +4161,14 @@
 
 ###########################################################################
 
-(def version "2026-01-13_03-50-18")
+(def version "2026-01-14_08-34-18")
 
 (def usage
   ``
   Usage: niche [<file-or-dir>...]
          niche [-h|--help] [-v|--version]
 
-  Nimbly Inspect Comment-Hidden Expressions
+  Nimbly Interpret Comment-Hidden Expressions
 
   Parameters:
 
@@ -4183,32 +4183,29 @@
 
     .niche.jdn             configuration file
 
-  Examples:
+  Example uses:
 
-    Create and run tests in `src/` directory:
+    1. Create and run comment-hidden expression tests
+       in `src/` directory:
 
-    $ niche src
+       $ niche src
 
-    `niche` can be used via `jpm`, `jeep`, etc. with
-    some one-time setup.  Create a suitable `.niche.jdn`
-    file in a project's root directory and a runner
-    file in a project's `test/` subdirectory (see below
-    for further details).
+    2. A configuration file (`.niche.jdn`) can be used
+       to specify paths to operate on and avoid
+       spelling out paths at the command line:
 
-    Run via `jeep test`:
+       $ niche
 
-    $ jeep test
+    3. `niche` can be used via `jeep`, `jpm`, etc.
+       with some one-time setup.  In a project's root
+       directory, create a suitable `.niche.jdn` file
+       and a runner file in the project's `test/`
+       subdirectory (see below for further details).
+       Then, in the case of `jeep`:
 
-    Run via `jpm test`:
+       $ jeep test
 
-    $ jpm test
-
-    Run using the configuration file via direct
-    invocation:
-
-    $ niche
-
-  Example `.niche.jdn` content:
+  Example `.niche.jdn` configuration file:
 
     {# what to work on - file and dir paths
      :includes ["src" "bin/my-script"]
@@ -4217,7 +4214,8 @@
 
   Example runner file `test/trigger-niche.janet`:
 
-    (import ../niche)
+    # adjust the path as needed
+    (import ../niche) # niche.janet is in project root
 
     (niche/main)
   ``)
