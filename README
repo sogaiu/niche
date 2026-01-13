@@ -1,0 +1,55 @@
+Usage: niche [<file-or-dir>...]
+       niche [-h|--help] [-v|--version]
+
+Nimbly Inspect Comment-Hidden Expressions
+
+Parameters:
+
+  <file-or-dir>          path to file or directory
+
+Options:
+
+  -h, --help             show this output
+  -v, --version          show version information
+
+Configuration:
+
+  .niche.jdn             configuration file
+
+Examples:
+
+  Create and run tests in `src/` directory:
+
+  $ niche src
+
+  `niche` can be used via `jpm`, `jeep`, etc. with
+  some one-time setup.  Create a suitable `.niche.jdn`
+  file in a project's root directory and a runner
+  file in a project's `test/` subdirectory (see below
+  for further details).
+
+  Run via `jeep test`:
+
+  $ jeep test
+
+  Run via `jpm test`:
+
+  $ jpm test
+
+  Run using the configuration file via direct
+  invocation:
+
+  $ niche
+
+Example `.niche.jdn` content:
+
+  {# what to work on - file and dir paths
+   :includes ["src" "bin/my-script"]
+   # what to skip - file paths only
+   :excludes ["src/sample.janet"]}
+
+Example runner file `test/trigger-niche.janet`:
+
+  (import ../niche)
+
+  (niche/main)
