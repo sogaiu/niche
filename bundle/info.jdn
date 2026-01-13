@@ -14,7 +14,11 @@
   {:name "jipper"
    :url "https://github.com/sogaiu/jipper"
    :tag "17a5e5b8a609e20579a641916d0808e446f5d112"
-   :paths [["jipper.janet" "src/"]]}]
+   :paths [["jipper.janet" "src/"]]}
+  {:name "niche"
+   :url "https://github.com/sogaiu/niche"
+   :tag "419933e4d6e27a6625bd3494aa71659ec8f36f25"
+   :paths [["niche.janet" "bin/"]]}]
 
  :binscripts
  # has `.janet` extension so that importing is possible, e.g. via:
