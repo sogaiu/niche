@@ -10,10 +10,17 @@
   #
   (def head (get the-args 0))
   #
-  (when (or (= head "-h") (= head "--help")
+  (def help-types
+    {"--help" :usage
+     "-h" :usage
+     "-hh" :background
+     "-hhh" :tutorial
+     "-hhhh" :reference})
+  (def htype (get help-types head))
+  (when (or htype
             # might have been invoked with no paths in repository root
             (and (not head) (not (f/is-file? s/conf-file))))
-    (break @{:show-help true}))
+    (break @{:show-help htype}))
   #
   (when (or (= head "-v") (= head "--version")
             # might have been invoked with no paths in repository root
@@ -73,7 +80,19 @@
 
   (parse-args ["-h"])
   # =>
-  @{:show-help true}
+  @{:show-help :usage}
+
+  (parse-args ["-hh"])
+  # =>
+  @{:show-help :background}
+
+  (parse-args ["-hhh"])
+  # =>
+  @{:show-help :tutorial}
+
+  (parse-args ["-hhhh"])
+  # =>
+  @{:show-help :reference}
 
   (parse-args ["{:overwrite true}" "src/main.janet"])
   # =>

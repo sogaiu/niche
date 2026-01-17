@@ -1,5 +1,7 @@
 Usage: niche [<file-or-dir>...]
-       niche [-h|--help] [-v|--version]
+
+       niche [--help|[-h[h[h[h]]]]]
+       niche [-v|--version]
 
 Nimbly Interpret Comment-Hidden Expressions
 
@@ -10,6 +12,10 @@ Parameters:
 Options:
 
   -h, --help             show this output
+  -hh                    show background material
+  -hhh                   show tutorial
+  -hhhh                  show reference
+
   -v, --version          show version information
 
 Configuration:
@@ -18,23 +24,21 @@ Configuration:
 
 Example uses:
 
-  1. Create and run comment-hidden expression tests
-     in `src/` directory:
+  1. Create and run comment-hidden expression tests in `src/`
+     directory:
 
      $ niche src
 
-  2. A configuration file (`.niche.jdn`) can be used
-     to specify paths to operate on and avoid
-     spelling out paths at the command line:
+  2. A configuration file (`.niche.jdn`) can be used to
+     specify paths to operate on and avoid spelling out paths
+     at the command line:
 
      $ niche
 
-  3. `niche` can be used via `jeep`, `jpm`, etc.
-     with some one-time setup.  In a project's root
-     directory, create a suitable `.niche.jdn` file
-     and a runner file in the project's `test/`
-     subdirectory (see below for further details).
-     Then, in the case of `jeep`:
+  3. `niche` can be used via `jeep`, `jpm`, etc. with some
+     setup.  In a project's root directory, create a suitable
+     `.niche.jdn` file and a runner file in the project's
+     `test/` subdirectory.  Then, in the case of `jeep`:
 
      $ jeep test
 
