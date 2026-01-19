@@ -242,7 +242,8 @@
     (default right [])
     (distinct [;left ;right]))
   #
-  (merge opts
+  (merge {:overwrite true}
+         opts
          {:includes (merge-indexed includes (get opts :includes))
           :excludes (merge-indexed excludes (get opts :excludes))}))
 
@@ -4611,7 +4612,7 @@
 (comment import ./output :prefix "")
 
 
-(def version "2026-01-19_05-17-56")
+(def version "2026-01-19_13-45-27")
 
 (defn main
   [& args]

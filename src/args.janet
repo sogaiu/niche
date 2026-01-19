@@ -63,7 +63,8 @@
     (default right [])
     (distinct [;left ;right]))
   #
-  (merge opts
+  (merge {:overwrite true}
+         opts
          {:includes (merge-indexed includes (get opts :includes))
           :excludes (merge-indexed excludes (get opts :excludes))}))
 
