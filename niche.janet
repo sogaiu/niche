@@ -4055,21 +4055,21 @@
   # pass / fail
   (def ps-paths (get noted-paths :pass))
   (def fl-paths (get noted-paths :fail))
-  #
-  (when fl-paths
-    (def n-ps-paths (length ps-paths))
-    (def n-fl-paths (length fl-paths))
-    (when (empty? fl-paths)
-      (l/notenf :i "All tests successful in %d file(s)."
-                n-ps-paths))
-    (when (not (empty? fl-paths))
-      (l/notenf :i "Test failures in %d of %d file(s)."
-                n-fl-paths (+ n-fl-paths n-ps-paths))))
   # errors
   (def p-paths (get noted-paths :parse))
   (def l-paths (get noted-paths :lint))
   (def r-paths (get noted-paths :run))
   (def err-paths [p-paths l-paths r-paths])
+  #
+  (when fl-paths
+    (def n-ps-paths (length ps-paths))
+    (def n-fl-paths (length fl-paths))
+    (when (and (empty? fl-paths) (empty? err-paths))
+      (l/notenf :i "All tests successful in %d file(s)."
+                n-ps-paths))
+    (when (not (empty? fl-paths))
+      (l/notenf :i "Test failures in %d of %d file(s)."
+                n-fl-paths (+ n-fl-paths n-ps-paths))))
   #
   (when (some |(not (empty? $)) err-paths)
     (def num-skipped (sum (map length err-paths)))
@@ -4611,7 +4611,7 @@
 (comment import ./output :prefix "")
 
 
-(def version "2026-01-17_11-24-51")
+(def version "2026-01-19_05-17-56")
 
 (defn main
   [& args]
