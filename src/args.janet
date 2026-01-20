@@ -77,7 +77,8 @@
   (parse-args ["src/main.janet"])
   # =>
   @{:excludes @[]
-    :includes @["src/main.janet"]}
+    :includes @["src/main.janet"]
+    :overwrite true}
 
   (parse-args ["-h"])
   # =>
@@ -95,16 +96,17 @@
   # =>
   @{:show-help :reference}
 
-  (parse-args ["{:overwrite true}" "src/main.janet"])
+  (parse-args ["{:overwrite false}" "src/main.janet"])
   # =>
   @{:excludes @[]
     :includes @["src/main.janet"]
-    :overwrite true}
+    :overwrite false}
 
   (parse-args [`{:excludes ["src/args.janet"]}` "src/main.janet"])
   # =>
   @{:excludes @["src/args.janet"]
-    :includes @["src/main.janet"]}
+    :includes @["src/main.janet"]
+    :overwrite true}
 
   (setdyn :test/color? old-value)
 
