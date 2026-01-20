@@ -562,6 +562,9 @@
     (l/noten :o)))
 
 
+(comment import ./tests :prefix "")
+(comment import ./errors :prefix "")
+
 (comment import ./rewrite :prefix "")
 (comment import ./errors :prefix "")
 
@@ -3861,11 +3864,6 @@
   )
 
 
-(comment import ./tests :prefix "")
-(comment import ./errors :prefix "")
-
-(comment import ./rewrite :prefix "")
-
 (comment import ./paths :prefix "")
 
 
@@ -4571,7 +4569,7 @@
 (comment import ./output :prefix "")
 
 
-(def version "2026-01-20_08-38-13")
+(def version "2026-01-20_08-44-41")
 
 (defn main
   [& args]

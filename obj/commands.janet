@@ -2,7 +2,6 @@
 (import ./files :prefix "")
 (import ./log :prefix "")
 (import ./output :prefix "")
-(import ./rewrite :prefix "")
 (import ./tests :prefix "")
 
 ########################################################################

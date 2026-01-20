@@ -2,7 +2,6 @@
 (import ./files :as f)
 (import ./log :as l)
 (import ./output :as o)
-(import ./rewrite :as r)
 (import ./tests :as t)
 
 ########################################################################
