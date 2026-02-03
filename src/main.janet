@@ -23,6 +23,10 @@
     (l/noten :o version)
     (os/exit 0))
   #
+  (when (not (get opts :includes))
+    (l/noten :e "Nothing to operate on.")
+    (os/exit 1))
+  #
   (def src-paths
     (f/collect-paths (get opts :includes)
                      |(or (string/has-suffix? ".janet" $)

@@ -4569,7 +4569,7 @@
 (comment import ./output :prefix "")
 
 
-(def version "2026-01-20_08-44-41")
+(def version "2026-02-03_07-12-34")
 
 (defn main
   [& args]
@@ -4585,6 +4585,10 @@
   (when (get opts :show-version)
     (l/noten :o version)
     (os/exit 0))
+  #
+  (when (not (get opts :includes))
+    (l/noten :e "Nothing to operate on.")
+    (os/exit 1))
   #
   (def src-paths
     (f/collect-paths (get opts :includes)
