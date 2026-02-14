@@ -3289,7 +3289,7 @@
                  # XXX: use `attrs` here?
                  ti-line-no ((get (j/node ti-zloc) 1) :bl)
                  test-label
-                 (string/format `"%s"`
+                 (string/format "%q"
                                 (r/make-label label-left label-right))]
              (set found-test true)
              (r/wrap-as-test-call start-zloc end-zloc
@@ -4569,7 +4569,7 @@
 (comment import ./output :prefix "")
 
 
-(def version "2026-02-03_07-12-34")
+(def version "2026-02-14_23-52-17")
 
 (defn main
   [& args]

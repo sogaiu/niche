@@ -22,5 +22,9 @@
   # =>
   2
 
+  (+ 1 1)
+  # "no longer" => "bad labels"
+  2
+
   )
 
