@@ -163,20 +163,21 @@
 (comment import ./errors :prefix "")
 
 
-(def s/conf-file ".niche.jdn")
+(def s/default-conf-file ".niche.jdn")
 
 (defn s/parse-conf-file
-  [s/conf-file]
-  (def b {:in "parse-conf-file" :args {:conf-file s/conf-file}})
+  [&opt conf-file]
+  (default conf-file s/default-conf-file)
+  (def b {:in "parse-conf-file" :args {:conf-file conf-file}})
   #
-  (let [src (try (slurp s/conf-file)
+  (let [src (try (slurp conf-file)
               ([e] (e/emf (merge b {:e-via-try e})
-                          "failed to slurp: %s" s/conf-file)))
+                          "failed to slurp: %s" conf-file)))
         cnf (try (parse src)
               ([e] (e/emf (merge b {:e-via-try e})
-                          "failed to parse: %s" s/conf-file)))]
+                          "failed to parse: %s" conf-file)))]
     (when (not cnf)
-      (e/emf b "failed to load: %s" s/conf-file))
+      (e/emf b "failed to load: %s" conf-file))
     #
     (when (not (dictionary? cnf))
       (e/emf b "expected dictionary in conf, got: %s" (type cnf)))
@@ -203,12 +204,12 @@
   (def htype (get help-types head))
   (when (or htype
             # might have been invoked with no paths in repository root
-            (and (not head) (not (f/is-file? s/conf-file))))
+            (and (not head) (not (f/is-file? s/default-conf-file))))
     (break @{:show-help htype}))
   #
   (when (or (= head "-v") (= head "--version")
             # might have been invoked with no paths in repository root
-            (and (not head) (not (f/is-file? s/conf-file))))
+            (and (not head) (not (f/is-file? s/default-conf-file))))
     (break @{:show-version true}))
   #
   (def opts
@@ -233,8 +234,8 @@
       (not (empty? the-args))
       [the-args @[]]
       # conf file
-      (f/is-file? s/conf-file)
-      (s/parse-conf-file s/conf-file)
+      (f/is-file? s/default-conf-file)
+      (s/parse-conf-file s/default-conf-file)
       #
       (e/emf b "unexpected result parsing args: %n" args)))
   #
@@ -4569,7 +4570,7 @@
 (comment import ./output :prefix "")
 
 
-(def version "2026-02-14_23-52-17")
+(def version "2026-02-21_06-25-48")
 
 (defn main
   [& args]
