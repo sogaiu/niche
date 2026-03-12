@@ -55,6 +55,7 @@
 
 (print-boundary)
 
+(printf "Used niche at: %s" niche-path)
 (printf "Total project(s): %d" (length proj-dirs))
 (printf "Total processing time: %.02f secs" (- (os/clock) start-time))
 
