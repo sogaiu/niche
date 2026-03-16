@@ -5,15 +5,15 @@
  :vendored
  [{:name "some-bundle-bits"
    :url "https://github.com/sogaiu/some-bundle-bits"
-   :tag "7ddb7ec53a6eb8c81b0c22bb7710a01fff57a759"
+   :tag "0a437e8329570fa38598e1c3ef2891e2f8002a10"
    :paths [["sbb.janet" "bundle/"]]}
   {:name "jell"
    :url "https://github.com/sogaiu/jell"
-   :tag "5002ee1176b5e9c6249f02d092de2e0d2a792445"
+   :tag "d64d7cf4efd50e7eb946a30da4b95aaee91198a3"
    :paths [["jell" "bin/"]]}
   {:name "jipper"
    :url "https://github.com/sogaiu/jipper"
-   :tag "17a5e5b8a609e20579a641916d0808e446f5d112"
+   :tag "299feb2bab8779565a0d0255d4730eaa6709c3d5"
    :paths [["jipper.janet" "src/"]]}
   {:name "niche"
    :url "https://github.com/sogaiu/niche"
