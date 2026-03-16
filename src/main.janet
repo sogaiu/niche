@@ -15,8 +15,8 @@
   (def opts (a/parse-args (drop 1 args)))
   #
   (when-let [htype (get opts :show-help)
-             doc (d/choose-doc htype)]
-    (l/noten :o doc)
+             doc-str (d/choose-doc htype)]
+    (l/noten :o doc-str)
     (os/exit 0))
   #
   (when (get opts :show-version)

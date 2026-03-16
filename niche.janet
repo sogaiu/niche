@@ -4604,7 +4604,7 @@
 (comment import ./output :prefix "")
 
 
-(def version "2026-03-16_05-51-26")
+(def version "2026-03-16_05-55-13")
 
 (defn main
   [& args]
@@ -4613,8 +4613,8 @@
   (def opts (a/parse-args (drop 1 args)))
   #
   (when-let [htype (get opts :show-help)
-             doc (d/choose-doc htype)]
-    (l/noten :o doc)
+             doc-str (d/choose-doc htype)]
+    (l/noten :o doc-str)
     (os/exit 0))
   #
   (when (get opts :show-version)
