@@ -450,7 +450,6 @@
     (buffer (if color (o/color-msg msg color) msg)))
   (l/note :o m-buf))
 
-# XXX: stop relying on janet's pretty printing -- not stable
 (defn o/prin-data
   [form &opt color]
   (def buf @"")
@@ -1227,7 +1226,7 @@
   )
 
 
-(def j/version "2026-03-19_03-08-08")
+(def j/version "2026-03-19_04-53-23")
 
 # exports
 (def j/par j/l/par)
@@ -1286,7 +1285,7 @@
   (j/zipper indexed
           indexed?
           j/h/to-entries
-          (fn [p xs] xs)))
+          (fn [_p xs] xs)))
 
 (comment
 
@@ -1778,7 +1777,7 @@
   root z-location.
   ``
   [zloc]
-  (let [[z-node st] zloc
+  (let [[_z-node st] zloc
         {:ls ls
          :pnodes pnodes
          :pstate pstate
@@ -2399,7 +2398,7 @@
   # because the desired exiting condition for the while loop depends
   # on cur-zloc becoming end-zloc -- if `replace` were to be used
   # there, the termination condition never gets fulfilled properly.
-  (for i 0 (dec (length kids)) # left to right again
+  (repeat (dec (length kids)) # left to right again
     (set cur-zloc
          (-> (j/replace cur-zloc dummy-node)
              j/right)))
@@ -2410,7 +2409,7 @@
   #
   (def new-node
     (j/make-node start-zloc wrap-node (tuple ;kids)))
-  (for i 0 (dec (length kids)) # right to left
+  (repeat (dec (length kids)) # right to left
     (set cur-zloc
          (j/remove cur-zloc)))
   # 4. put the new container node into place
@@ -4612,7 +4611,7 @@
 (comment import ./output :prefix "")
 
 
-(def version "2026-03-19_04-16-27")
+(def version "2026-03-19_05-08-49")
 
 (defn main
   [& args]
