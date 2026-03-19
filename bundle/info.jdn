@@ -7,6 +7,10 @@
    :url "https://github.com/sogaiu/some-bundle-bits"
    :tag "70409ab34b7c762118e0d31efaa4d2f01d46fecf"
    :paths [["sbb.janet" "bundle/"]]}
+  {:name "choosy"
+   :url "https://github.com/sogaiu/choosy"
+   :tag "3a40249409daf8af7cd0800e2116716bf8d66ac1"
+   :paths [["choosy.janet" "src/"]]}
   {:name "jell"
    :url "https://github.com/sogaiu/jell"
    :tag "718464b8b94971fd8f9e984ca81d35e2c859546e"

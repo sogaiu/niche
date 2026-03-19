@@ -397,6 +397,143 @@
 
 
 (comment import ./output :prefix "")
+(comment import ./choosy :prefix "")
+(defn ch/substr
+  [src bl bc el ec &opt pos line]
+  (default pos 0)
+  (default line 0)
+  #
+  (def src-len (length src))
+  (var cur-pos pos)
+  (var cur-line line)
+  (while (< cur-pos src-len)
+    (when (= cur-line bl)
+      (break))
+    #
+    (when (= (chr "\n") (get src cur-pos))
+      (++ cur-line))
+    (++ cur-pos))
+  #
+  (var cur-col 0)
+  (while (<= cur-col bc)
+    (when (= cur-col bc)
+      (break))
+    #
+    (when (= (chr "\n") (get src cur-pos))
+      (errorf "unexpected newline at position: %d" cur-pos))
+    #
+    (++ cur-pos)
+    (++ cur-col))
+  #
+  (def start-pos cur-pos)
+  #
+  (while (< cur-pos src-len)
+    (when (= cur-line el)
+      (break))
+    #
+    (when (= (chr "\n") (get src cur-pos))
+      (++ cur-line))
+    (++ cur-pos))
+  #
+  (when (not= bl el)
+    (set cur-col 0))
+  (while (<= cur-col ec)
+    (when (= cur-col ec)
+      (break))
+    #
+    (when (= (chr "\n") (get src cur-pos))
+      (errorf "unexpected newline at position: %d" cur-pos))
+    #
+    (++ cur-pos)
+    (++ cur-col))
+  #
+  (def end-pos cur-pos)
+  #
+  [(string/slice src (- start-pos bc) start-pos)
+   (string/slice src start-pos end-pos)
+   cur-pos cur-line cur-col])
+
+(defn ch/try-next-slice
+  [src pos line args idx]
+  (assertf (<= 4 (- (length args) idx))
+           "need more arguments: %n" args)
+  #
+  (def [bl bc el ec]
+    (map scan-number (slice args idx (+ idx 4))))
+  (assertf (all int? [bl bc el ec])
+           "expected integers, but apparently not: %n" [bl bc el ec])
+  (assertf (<= bl el)
+           "first line should be <= second line, but: %d %d" bl el)
+  (when (= bl el)
+    (assertf (< bc ec)
+             "start col should be < end col since on same line: %d %d"
+             bc ec))
+  #
+  (def [indent-str target new-pos new-line _]
+    (ch/substr src bl bc el ec pos line))
+  #
+  [indent-str target new-pos new-line])
+
+(defn ch/process-slices
+  [src args &opt start-idx]
+  (default start-idx 1)
+  (var idx start-idx)
+  (var pos 0)
+  (var line 0)
+  (assertf (<= 4 (- (length args) idx))
+           "need more arguments: %n" args)
+  #
+  (def results @[])
+  #
+  (while (<= 4 (- (length args) idx))
+    (def [indent-str target new-pos new-line _]
+      (ch/try-next-slice src pos line args idx))
+    #
+    (array/push results [indent-str target])
+    #
+    (set pos new-pos)
+    (set line new-line)
+    (+= idx 4))
+  #
+  results)
+
+(comment
+
+  (def src
+    ``
+    (def my-fn
+      [x]
+      (+ x 2))
+
+    # hello there
+
+    (def k 11)
+    ``)
+
+  (ch/process-slices src
+                  (map string [0 0 2 10
+                               6 0 6 10])
+                  0)
+  # =>
+  @[["" "(def my-fn\n  [x]\n  (+ x 2))"]
+    ["" "(def k 11)"]]
+
+  )
+
+(defn ch/main
+  [_ & args]
+  (def fname (get args 0))
+  (assertf (and fname (= :file (os/stat fname :mode)))
+           "expected file, but %s isn't" fname)
+  # XXX: going to assume file is not too big
+  (def src (slurp fname))
+  #
+  (def results (ch/process-slices src args))
+  #
+  (each [indent-str target] results
+    (print indent-str target)))
+
+
 (comment import ./log :prefix "")
 
 
@@ -491,14 +628,18 @@
           "/"
           (o/color-msg denom :green)))
 
+# peg is line 1, column 1 based
+# choosy is line 0, column 0 based
+# emacs is line 1, column 0 based
 (defn o/report-fails
-  [{:num-tests total-tests :fails fails}]
+  [src {:num-tests total-tests :fails fails}]
   (var i 0)
   (each f fails
-    (def {:test-value test-value
+    (def {:test-form test-form
+          :test-value test-value
           :expected-value expected-value
           :line-no line-no
-          :test-form test-form} f)
+          :rest rest} f)
     (++ i)
     #
     (l/noten :o)
@@ -514,8 +655,11 @@
     (l/noten :o)
     #
     (l/noten :o)
+    #(pp rest)
     (o/prin-color "form" :yellow)
-    (o/prin-form test-form)
+    (print ":")
+    #(prin-form test-form)
+    (print (string ;(slice (ch/substr src ;(map dec rest)) 0 2)))
     (l/noten :o)
     #
     (l/noten :o)
@@ -538,12 +682,14 @@
     (l/noten :o content)))
 
 (defn o/report
-  [test-results out err]
+  [input test-results out err]
   (when (not (empty? (get test-results :fails)))
     (l/noten :o)
     (o/prin-sep)
     #
-    (o/report-fails test-results)
+    (def src (slurp input))
+    #
+    (o/report-fails src test-results)
     #
     (when (and out (pos? (length out)))
       (l/noten :o)
@@ -2771,7 +2917,7 @@
   (var _verify/test-results @[])
 
   (defmacro _verify/is
-    [t-form e-form line-no name]
+    [t-form e-form line-no name & rest]
     (with-syms [$ts $tr
                 $es $er]
       ~(do
@@ -2788,6 +2934,7 @@
                         #
                         :line-no ,line-no
                         :name ,name
+                        :rest ',rest
                         :passed (if (as-macro ,and ,$ts ,$es)
                                   (,deep= ,$tr ,$er)
                                   nil)})
@@ -3245,7 +3392,8 @@
   )
 
 (defn r/wrap-as-test-call
-  [start-zloc end-zloc ti-line-no test-label]
+  [start-zloc end-zloc ti-line-no test-label
+   {:bl bl :bc bc :el el :ec ec}]
   # XXX: hack - not sure if robust enough
   (def eol-str (if (= :windows (os/which)) "\r\n" "\n"))
   (-> (j/wrap start-zloc [:tuple @{}] end-zloc)
@@ -3261,7 +3409,19 @@
       (j/append-child [:number @{} (string ti-line-no)])
       #
       (j/append-child [:whitespace @{} " "])
-      (j/append-child [:string @{} test-label])))
+      (j/append-child [:string @{} test-label])
+      #
+      (j/append-child [:whitespace @{} " "])
+      (j/append-child [:number @{} (string bl)])
+      #
+      (j/append-child [:whitespace @{} " "])
+      (j/append-child [:number @{} (string bc)])
+      #
+      (j/append-child [:whitespace @{} " "])
+      (j/append-child [:number @{} (string el)])
+      #
+      (j/append-child [:whitespace @{} " "])
+      (j/append-child [:number @{} (string ec)])))
 
 (comment
 
@@ -3284,7 +3444,8 @@
                      left-of-t-zloc
                      #
                      t-zloc)
-        w-zloc (r/wrap-as-test-call start-zloc e-zloc "3" `""`)]
+        w-zloc (r/wrap-as-test-call start-zloc e-zloc 3 `""`
+                                  (get (j/node t-zloc) 1))]
     (j/gen (j/node w-zloc)))
   # =>
   (string "(_verify/is\n"
@@ -3292,7 +3453,11 @@
           "# =>\n"
           "2 "
           "3 "
-          `""`
+          `"" `
+          "1 "
+          "1 "
+          "1 "
+          "8"
           ")")
 
   )
@@ -3328,7 +3493,8 @@
                                 (r/make-label label-left label-right))]
              (set found-test true)
              (r/wrap-as-test-call start-zloc end-zloc
-                                ti-line-no test-label)))))
+                                ti-line-no test-label
+                                (get (j/node test-expr-zloc) 1))))))
   # navigate back out to top of block
   (when found-test
     # morph comment block into plain tuple -- to be unwrapped later
@@ -4108,7 +4274,7 @@
   (def {:report report} opts)
   (default report o/report)
   # print out results
-  (report test-results test-out test-err)
+  (report input test-results test-out test-err)
   #
   (when (not= 0 exit-code)
     (break [:exit-code test-results]))
@@ -4604,7 +4770,7 @@
 (comment import ./output :prefix "")
 
 
-(def version "2026-03-16_06-37-00")
+(def version "2026-03-18_14-38-25")
 
 (defn main
   [& args]

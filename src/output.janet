@@ -1,3 +1,4 @@
+(import ./choosy :as ch)
 (import ./log :as l)
 
 (def color-table
@@ -92,13 +93,14 @@
           (color-msg denom :green)))
 
 (defn report-fails
-  [{:num-tests total-tests :fails fails}]
+  [src {:num-tests total-tests :fails fails}]
   (var i 0)
   (each f fails
-    (def {:test-value test-value
+    (def {:test-form test-form
+          :test-value test-value
           :expected-value expected-value
           :line-no line-no
-          :test-form test-form} f)
+          :rest rest} f)
     (++ i)
     #
     (l/noten :o)
@@ -114,8 +116,11 @@
     (l/noten :o)
     #
     (l/noten :o)
+    #(pp rest)
     (prin-color "form" :yellow)
-    (prin-form test-form)
+    (print ":")
+    #(prin-form test-form)
+    (print (string ;(slice (ch/substr src ;(map dec rest)) 0 2)))
     (l/noten :o)
     #
     (l/noten :o)
@@ -138,12 +143,14 @@
     (l/noten :o content)))
 
 (defn report
-  [test-results out err]
+  [input test-results out err]
   (when (not (empty? (get test-results :fails)))
     (l/noten :o)
     (prin-sep)
     #
-    (report-fails test-results)
+    (def src (slurp input))
+    #
+    (report-fails src test-results)
     #
     (when (and out (pos? (length out)))
       (l/noten :o)

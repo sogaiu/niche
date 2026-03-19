@@ -409,7 +409,8 @@
   )
 
 (defn wrap-as-test-call
-  [start-zloc end-zloc ti-line-no test-label]
+  [start-zloc end-zloc ti-line-no test-label
+   {:bl bl :bc bc :el el :ec ec}]
   # XXX: hack - not sure if robust enough
   (def eol-str (if (= :windows (os/which)) "\r\n" "\n"))
   (-> (j/wrap start-zloc [:tuple @{}] end-zloc)
@@ -425,7 +426,19 @@
       (j/append-child [:number @{} (string ti-line-no)])
       #
       (j/append-child [:whitespace @{} " "])
-      (j/append-child [:string @{} test-label])))
+      (j/append-child [:string @{} test-label])
+      #
+      (j/append-child [:whitespace @{} " "])
+      (j/append-child [:number @{} (string bl)])
+      #
+      (j/append-child [:whitespace @{} " "])
+      (j/append-child [:number @{} (string bc)])
+      #
+      (j/append-child [:whitespace @{} " "])
+      (j/append-child [:number @{} (string el)])
+      #
+      (j/append-child [:whitespace @{} " "])
+      (j/append-child [:number @{} (string ec)])))
 
 (comment
 
@@ -448,7 +461,8 @@
                      left-of-t-zloc
                      #
                      t-zloc)
-        w-zloc (wrap-as-test-call start-zloc e-zloc "3" `""`)]
+        w-zloc (wrap-as-test-call start-zloc e-zloc 3 `""`
+                                  (get (j/node t-zloc) 1))]
     (j/gen (j/node w-zloc)))
   # =>
   (string "(_verify/is\n"
@@ -456,7 +470,11 @@
           "# =>\n"
           "2 "
           "3 "
-          `""`
+          `"" `
+          "1 "
+          "1 "
+          "1 "
+          "8"
           ")")
 
   )
@@ -492,7 +510,8 @@
                                 (make-label label-left label-right))]
              (set found-test true)
              (wrap-as-test-call start-zloc end-zloc
-                                ti-line-no test-label)))))
+                                ti-line-no test-label
+                                (get (j/node test-expr-zloc) 1))))))
   # navigate back out to top of block
   (when found-test
     # morph comment block into plain tuple -- to be unwrapped later

@@ -35,7 +35,7 @@
   (def {:report report} opts)
   (default report o/report)
   # print out results
-  (report test-results test-out test-err)
+  (report input test-results test-out test-err)
   #
   (when (not= 0 exit-code)
     (break [:exit-code test-results]))
