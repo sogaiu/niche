@@ -19,6 +19,7 @@
                    :line-no 4
                    :name ""
                    :passed false
+                   :rest [12 19 2]
                    :test-form (+ 2 8)
                    :test-status true
                    :test-value 10}]
@@ -30,6 +31,7 @@
                    :line-no 4
                    :name ""
                    :passed false
+                   :rest [12 26 2]
                    :test-form (nan? (/ 0 0))
                    :test-status true
                    :test-value true}]

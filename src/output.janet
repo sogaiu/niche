@@ -1,4 +1,3 @@
-(import ./choosy :as ch)
 (import ./log :as l)
 
 (def color-table
@@ -45,14 +44,20 @@
   (l/note :o (separator str n)))
 
 (defn prin-form
+  [form-str &opt color]
+  (def msg (string/trimr form-str))
+  (def m-buf
+    (buffer (if color (color-msg msg color) msg)))
+  (l/note :o m-buf))
+
+(defn prin-data
   [form &opt color]
   (def buf @"")
   (with-dyns [:out buf]
     (printf "%m" form))
   (def msg (string/trimr buf))
   (def m-buf
-    (buffer ":\n"
-            (if color (color-msg msg color) msg)))
+    (buffer (if color (color-msg msg color) msg)))
   (l/note :o m-buf))
 
 (defn color-form
@@ -116,21 +121,22 @@
     (l/noten :o)
     #
     (l/noten :o)
-    #(pp rest)
-    (prin-color "form" :yellow)
-    (print ":")
-    #(prin-form test-form)
-    (print (string ;(slice (ch/substr src ;(map dec rest)) 0 2)))
+    (prin-color "form:" :yellow)
+    (l/noten :o)
+    (prin-form (string (string/repeat " " (get rest 2))
+                       (string/slice src (get rest 0) (get rest 1))))
     (l/noten :o)
     #
     (l/noten :o)
-    (prin-color "expected" :yellow)
-    (prin-form expected-value)
+    (prin-color "expected:" :yellow)
+    (l/noten :o)
+    (prin-data expected-value)
     (l/noten :o)
     #
     (l/noten :o)
-    (prin-color "actual" :yellow)
-    (prin-form test-value :blue)
+    (prin-color "actual:" :yellow)
+    (l/noten :o)
+    (prin-data test-value :blue)
     (l/noten :o)))
 
 (defn report-std
