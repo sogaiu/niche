@@ -447,7 +447,6 @@
   [form-str &opt color indent]
   (default color nil)
   (default indent 0)
-  (def indent-str (string/repeat " " indent))
   (def msg (string/trimr form-str))
   (def lines (string/split "\n" msg))
   #
@@ -455,6 +454,7 @@
   (def buf-0 (buffer (if color (o/color-msg line-0 color) line-0)))
   (l/note :o buf-0)
   #
+  (def indent-str (string/repeat " " indent))
   (for i 1 (length lines)
     (l/noten :o)
     (def line-i
@@ -4628,7 +4628,7 @@
 (comment import ./output :prefix "")
 
 
-(def version "2026-03-20_06-05-36")
+(def version "2026-03-20_06-08-28")
 
 (defn main
   [& args]
