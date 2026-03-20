@@ -47,6 +47,7 @@
   [form-str &opt color indent]
   (default color nil)
   (default indent 0)
+  (def indent-str (string/repeat " " indent))
   (def msg (string/trimr form-str))
   (def lines (string/split "\n" msg))
   #
@@ -56,10 +57,13 @@
   #
   (for i 1 (length lines)
     (l/noten :o)
-    (def line-i (get lines i))
+    (def line-i
+      (let [l (get lines i)]
+        (if (string/has-prefix? indent-str l)
+          (buffer/slice l indent)
+          l)))
     (def buf-i
-      (buffer/slice (if color (color-msg line-i color) line-i)
-                    indent))
+      (buffer (if color (color-msg line-i color) line-i)))
     (l/note :o buf-i)))
 
 (defn prin-data
