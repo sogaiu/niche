@@ -13,7 +13,7 @@
    :paths [["jell" "bin/"]]}
   {:name "jipper"
    :url "https://github.com/sogaiu/jipper"
-   :tag "7e2876d4a4bad8cd080cf150230ecadc31ed9b20"
+   :tag "827735933d353400088f93a24085a47910044560"
    :paths [["jipper.janet" "src/"]]}
   {:name "niche"
    :url "https://github.com/sogaiu/niche"
