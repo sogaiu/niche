@@ -15,7 +15,7 @@
    :url "https://github.com/sogaiu/jipper"
    :tag "827735933d353400088f93a24085a47910044560"
    :paths [["jipper.janet" "src/"]]}
-  {:name "niche"
+  {:name "older-niche"
    :url "https://github.com/sogaiu/niche"
    :tag "728321b1e91c6dd7086bdd1dc28f41cba94fbaec"
    :paths [["niche.janet" "bin/"]]}
