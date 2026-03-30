@@ -1243,7 +1243,7 @@
   )
 
 
-(def j/version "2026-03-20_08-37-15")
+(def j/version "2026-03-30_08-59-55")
 
 # exports
 (def j/par j/l/par)
@@ -2152,6 +2152,69 @@
 
   )
 
+(defn j/right-from-until
+  ``
+  Call `pred` on zloc, and if it fails, successively on
+  each right sibling until a truthy result.
+
+  Return the zloc corresponding to the one which `pred`
+  returns a truthy result for, if any.  Otherwise, return
+  nil.
+  ``
+  [zloc pred]
+  (defn helper
+    [a-zloc]
+    (when-let [right-sib (j/right a-zloc)]
+      (if (pred right-sib)
+        right-sib
+        (helper right-sib))))
+  #
+  (if (pred zloc)
+    zloc
+    (helper zloc)))
+
+(comment
+
+  (-> [:code
+       [:bracket-tuple
+        [:number "1"] [:whitespace " "]
+        [:number "2"]]]
+      j/indexed-zip
+      j/down
+      j/right
+      j/down
+      j/right
+      (j/right-from-until |(match (j/node $)
+                           [:number]
+                           true
+                           #
+                           false))
+      j/node)
+  # =>
+  [:number "1"]
+
+  (-> [:code
+       [:tuple
+        [:comment "# hi there"] [:whitespace "\n"]
+        [:symbol "+"] [:whitespace " "]
+        [:number "1"] [:whitespace " "]
+        [:number "2"]]]
+      j/indexed-zip
+      j/down
+      j/right
+      j/down
+      j/right
+      (j/right-from-until |(match (j/node $)
+                           [:number]
+                           true
+                           #
+                           false))
+      j/node)
+  # =>
+  [:number "1"]
+
+  )
+
 (defn j/left-until
   ``
   Try to move left from `zloc`, calling `pred` for each
@@ -2687,6 +2750,79 @@
       j/left-skip-wsc)
   # =>
   nil
+
+  )
+
+(defn j/down-skip-wsc
+  ``
+  Try to move down from `zloc`, skipping over any whitespace
+  and comment nodes that might exist immediately after
+  moving down.
+
+  If successful in finding a non-whitespace, non-comment node,
+  return the corresponding z-location.  Otherwise, return nil.
+  ``
+  [zloc]
+  (def d-zloc (j/down zloc))
+  (when d-zloc
+    (if (match (j/node d-zloc)
+          [:whitespace]
+          true
+          #
+          [:comment]
+          true
+          #
+          false)
+      (j/right-skip-wsc d-zloc)
+      d-zloc)))
+
+(comment
+
+  (-> (j/par (string "(# hi there\n"
+                   "+ 1 2)"))
+      j/zip-down
+      j/down-skip-wsc
+      j/node)
+  # =>
+  [:symbol @{:bc 1 :bl 2 :bp 12 :ec 2 :el 2 :ep 13} "+"]
+
+  (-> (j/par (string "()"))
+      j/zip-down
+      j/down-skip-wsc
+      j/node)
+  # =>
+  nil
+
+  (-> (j/par (string "(# a comment\n"
+                   ")"))
+      j/zip-down
+      j/down-skip-wsc
+      j/node)
+  # =>
+  nil
+
+  (-> (j/par (string "( )"))
+      j/zip-down
+      j/down-skip-wsc
+      j/node)
+  # =>
+  nil
+
+  (-> (j/par (string "(\n"
+                   "# a comment\n"
+                   ")"))
+      j/zip-down
+      j/down-skip-wsc
+      j/node)
+  # =>
+  nil
+
+  (-> (j/par (string "{:a 1}"))
+      j/zip-down
+      j/down-skip-wsc
+      j/node)
+  # =>
+  [:keyword @{:bc 2 :bl 1 :bp 1 :ec 4 :el 1 :ep 3} ":a"]
 
   )
 
@@ -4628,7 +4764,7 @@
 (comment import ./output :prefix "")
 
 
-(def version "2026-03-30_01-35-59")
+(def version "2026-03-30_09-10-39")
 
 (defn main
   [& args]

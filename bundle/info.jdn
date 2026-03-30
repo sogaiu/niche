@@ -9,15 +9,15 @@
    :paths [["sbb.janet" "bundle/"]]}
   {:name "jell"
    :url "https://github.com/sogaiu/jell"
-   :tag "718464b8b94971fd8f9e984ca81d35e2c859546e"
+   :tag "45edb7d4c2c6cb8398de58d1529faa0fb6605b61"
    :paths [["jell" "bin/"]]}
   {:name "jipper"
    :url "https://github.com/sogaiu/jipper"
-   :tag "827735933d353400088f93a24085a47910044560"
+   :tag "384d5dcfdfc2eba7ae726c8e76298e31e0b7065a"
    :paths [["jipper.janet" "src/"]]}
   {:name "older-niche"
    :url "https://github.com/sogaiu/niche"
-   :tag "728321b1e91c6dd7086bdd1dc28f41cba94fbaec"
+   :tag "7d6914d48132b13241154252b20b131b1d0e46ba"
    :paths [["niche.janet" "bin/"]]}
   {:name "spork"
    :url "https://github.com/janet-lang/spork"
