@@ -26,3 +26,4 @@
          "updating README exited: %d" readme-update-ext)
 (print "done")
 
+(print "*** remember to update quiche! ***")
